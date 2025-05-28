@@ -2,7 +2,7 @@
 
 A full-stack application connecting buyers with sellers through a project bidding system. Built with Next.js 14, PostgreSQL, and modern web technologies.
 
-🌐 **Live Demo**: [https://seller-buyer-bidding-system-eta.vercel.app](https://seller-buyer-bidding-system-eta.vercel.app)
+🌐 **Live Demo**: [https://seller-buyer-bidding-system.vercel.app](https://seller-buyer-bidding-system.vercel.app)
 
 ## ✨ Features
 
@@ -27,6 +27,7 @@ A full-stack application connecting buyers with sellers through a project biddin
 ## 🚀 Quick Setup
 
 ### 1. Clone & Install
+
 ```bash
 git clone https://github.com/AnkushS27/Seller-Buyer-Bidding-System.git
 cd Seller-Buyer-Bidding-System
@@ -34,6 +35,7 @@ npm install
 ```
 
 ### 2. Environment Setup
+
 Create `.env.local` file:
 
 ```env
@@ -65,6 +67,7 @@ SMTP_FROM=noreply@yourapp.com
 ```
 
 ### 3. Database Setup
+
 ```bash
 # Generate Prisma client
 npx prisma generate
@@ -74,37 +77,44 @@ npx prisma db push
 ```
 
 ### 4. Run Development Server
+
 ```bash
 npm run dev
 ```
 
 ### 5. Initialize Database
+
 Visit `http://localhost:3000/setup` and click **"Prisma Setup"** to create sample data.
 
 ## 🎯 Project Approach
 
 ### Architecture
+
 - **Next.js App Router** for file-based routing and SSR
 - **Prisma ORM** for type-safe database operations
 - **JWT Authentication** with middleware protection
 - **RESTful API** design with proper HTTP status codes
 
 ### Database Design
+
 ```
 Users → Projects → Bids → Deliverables
 ```
+
 - **Users**: BUYER/SELLER roles with authentication
 - **Projects**: Lifecycle management (OPEN → IN_PROGRESS → COMPLETED)
 - **Bids**: Seller proposals with amount and description
 - **Deliverables**: File uploads linked to projects
 
 ### Security
+
 - Password hashing with bcrypt
 - JWT tokens in HTTP-only cookies
 - Route protection via middleware
 - Input validation and SQL injection prevention
 
 ### Email System
+
 - Automated notifications for project updates
 - HTML email templates
 - Graceful error handling for optional email service
@@ -112,18 +122,21 @@ Users → Projects → Bids → Deliverables
 ## 🧪 Test Accounts
 
 After database setup:
+
 - **Buyer**: `buyer@example.com` / `password123`
 - **Seller**: `seller@example.com` / `password123`
 
 ## 📦 Deployment
 
 ### Deploy to Vercel
+
 1. Push to GitHub
 2. Import repository on [Vercel](https://vercel.com)
 3. Add environment variables
 4. Deploy and visit `/setup` to initialize database
 
 ### Environment Variables for Production
+
 Set all variables from `.env.local` in your Vercel project settings.
 
 ## 🔧 Development Commands
@@ -138,11 +151,13 @@ npx prisma generate  # Generate Prisma client
 ## 🐛 Troubleshooting
 
 **Database Connection Issues:**
+
 - Ensure PostgreSQL is running (local) or Supabase URL is correct
 - Check environment variables are properly set
 - Try the setup page at `/setup`
 
 **Build Errors:**
+
 - Run `npx prisma generate` before building
 - Verify all environment variables are set in production
 
