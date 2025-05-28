@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { getAuthUser } from "@/lib/auth"
+import { sendEmail, emailTemplates } from "@/lib/email"
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
@@ -58,6 +59,16 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
         sellerId: user.id,
       },
     })
+
+    // Send email notification to project owner
+    const project = await prisma.project.findUnique({
+      where: { id: params.id },
+      include: { buyer: true },
+    })
+
+    if (project?.buyer) {
+      await sendEmail(project.buyer.email, "New Bid Received", emailTemplates.newBid(project.title, user.name, amount))
+    }
 
     return NextResponse.json(bid)
   } catch (error) {
