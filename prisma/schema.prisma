@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  userType  UserType
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Buyer relations
+  projects Project[] @relation("BuyerProjects")
+  reviews  Review[]  @relation("BuyerReviews")
+
+  // Seller relations
+  bids           Bid[]    @relation("SellerBids")
+  selectedProjects Project[] @relation("SelectedSeller")
+  receivedReviews Review[] @relation("SellerReviews")
+
+  @@map("users")
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  title       String
+  description String
+  budgetMin   Int
+  budgetMax   Int
+  deadline    DateTime
+  status      ProjectStatus @default(PENDING)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  // Relations
+  buyerId        String
+  buyer          User   @relation("BuyerProjects", fields: [buyerId], references: [id])
+  selectedSellerId String?
+  selectedSeller   User?  @relation("SelectedSeller", fields: [selectedSellerId], references: [id])
+
+  bids         Bid[]
+  deliverables Deliverable[]
+  reviews      Review[]
+
+  @@map("projects")
+}
+
+model Bid {
+  id                String   @id @default(cuid())
+  amount            Int
+  estimatedDays     Int
+  message           String
+  createdAt         DateTime @default(now())
+
+  // Relations
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  sellerId  String
+  seller    User    @relation("SellerBids", fields: [sellerId], references: [id])
+
+  @@unique([projectId, sellerId])
+  @@map("bids")
+}
+
+model Deliverable {
+  id          String   @id @default(cuid())
+  fileName    String
+  fileUrl     String
+  description String?
+  createdAt   DateTime @default(now())
+
+  // Relations
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("deliverables")
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  rating      Int      @db.SmallInt
+  comment     String?
+  createdAt   DateTime @default(now())
+
+  // Relations
+  projectId String  @unique
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  buyerId   String
+  buyer     User    @relation("BuyerReviews", fields: [buyerId], references: [id])
+  sellerId  String
+  seller    User    @relation("SellerReviews", fields: [sellerId], references: [id])
+
+  @@map("reviews")
+}
+
+enum UserType {
+  BUYER
+  SELLER
+}
+
+enum ProjectStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
