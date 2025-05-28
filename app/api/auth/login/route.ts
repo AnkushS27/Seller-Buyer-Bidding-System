@@ -6,6 +6,8 @@ export async function POST(request: NextRequest) {
   try {
     const { email, password } = await request.json()
 
+    console.log("PRISMA_URL:", process.env.POSTGRES_PRISMA_URL);
+
     // Find user
     const user = await prisma.user.findUnique({
       where: { email },
